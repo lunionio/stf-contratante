@@ -22,7 +22,8 @@ namespace Admin.Helppser
                 Cidade = vaga.Cidade,
                 Descricao = (vaga.Rua + ". " + vaga.Numero + ". " + vaga.Bairro + " - " + vaga.Cidade + " /" +
                 vaga.Uf + " (" + vaga.Cep + ")"),
-                Estado = vaga.Uf
+                Estado = vaga.Uf,
+                CEP = vaga.Cep.ToString(),
             };
 
             return new OportunidadeViewModel
@@ -31,11 +32,18 @@ namespace Admin.Helppser
                 DataCriacao = DateTime.Now,
                 DataOportunidade = vaga.DataEvento,
                 DescProfissional = vaga.ProfissionalNome,
-                Descricao = vaga.Nome,
+                Nome = vaga.Nome,
                 Quantidade = vaga.Qtd,
                 TipoProfissional = vaga.Profissional,
                 UsuarioCriacao = PixCoreValues.UsuarioLogado.IdUsuario,
-                Endereco = endereco
+                Endereco = endereco,
+                HoraInicio = vaga.Hora,
+                HoraFim = vaga.Hora,
+                OportunidadeStatusID = vaga.status,
+                IdEmpresa = vaga.IdEmpresa,
+                IdCliente = PixCoreValues.UsuarioLogado.idCliente,
+                Valor = vaga.Valor,
+                Status = vaga.status,
             };
 
         }

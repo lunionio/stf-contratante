@@ -14,28 +14,60 @@ namespace Admin.Controllers
         // GET: FaleConosco
         public ActionResult Index()
         {
+            //GetTipos();
+
             ViewBag.email = PixCoreValues.UsuarioLogado.Login;
             return View();
+        }
+
+        private static void GetTipos()
+        {
+            var usuario = PixCoreValues.UsuarioLogado;
+            var keyUrl = ConfigurationManager.AppSettings["UrlAPI"].ToString();
+            var url = keyUrl + "/Seguranca/wpAtendimento/BuscarTipos/" + usuario.idCliente + "/" + PixCoreValues.UsuarioLogado.IdUsuario;
+
+            var result = string.Empty;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                using (Stream stream = response.GetResponseStream())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        result = reader.ReadToEnd();
+                    }
+                }
+            }
+
+            //var jss = new JavaScriptSerializer();
+            //var tipos = jss.Deserialize<Base>(result); Necessário Classe Tipos
+
         }
 
         [HttpPost]
         public ActionResult Enviar(FaleconoscoVIewModel model)
         {
-            // Save(model);
+            var ticket = Save(model);
 
-            return Json("0000000");
+            return Json(ticket);
         }
 
-        private bool Save(FaleconoscoVIewModel model)
+        private string Save(FaleconoscoVIewModel model)
         {
             try
             {
                 var usuario = PixCoreValues.UsuarioLogado;
                 var jss = new JavaScriptSerializer();
                 var keyUrl = ConfigurationManager.AppSettings["UrlAPI"].ToString();
-                var url = keyUrl + "/Seguranca/Principal/DeletarUsuario/" + usuario.idCliente + "/" + PixCoreValues.UsuarioLogado.IdUsuario;
+                var url = keyUrl + "/Seguranca/wpAtendimento/AbrirTicket/" + usuario.idCliente + "/" + PixCoreValues.UsuarioLogado.IdUsuario;
                 object envio = Helppers.FaleConosco.Convert(model);
-                var data = jss.Serialize(envio);
+
+                var obj = new
+                {
+                    ticket = envio,
+                };
+
+                var data = jss.Serialize(obj);
 
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 httpWebRequest.ContentType = "application/json";
@@ -48,18 +80,19 @@ namespace Admin.Controllers
                     streamWriter.Close();
                 }
 
+                var ticket = string.Empty;
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    var result = streamReader.ReadToEnd();
-                    if (string.IsNullOrEmpty(result)
-                        || "null".Equals(result.ToLower()))
+                    ticket = streamReader.ReadToEnd();
+                    if (string.IsNullOrEmpty(ticket)
+                        || "null".Equals(ticket.ToLower()))
                     {
                         throw new Exception("Ouve um erro durante o processo.");
                     }
                 }
 
-                return true;
+                return ticket;
             }
             catch (Exception e)
             {

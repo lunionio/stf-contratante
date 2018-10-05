@@ -28,5 +28,7 @@ namespace Admin.Models
         public string Referencia { get; set; }
         public DateTime DataEvento { get; set; }
         public int status { get; set; }
+        public int IdEmpresa { get; set; }
+        public int IdCliente { get; set; }
     }
 }
