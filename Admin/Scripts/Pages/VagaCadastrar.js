@@ -58,6 +58,8 @@ function aplicarMascaras() {
 }
 
 function VagaViewModel() {
+    var data = $('#data').val();
+    var dataEvento = Date.parse(data);
     var VagaViewModel = {
         Nome: $('#nome').val(),
         Cep: $('#cep').val(),
@@ -65,10 +67,11 @@ function VagaViewModel() {
         Bairro: $('#bairro').val(),
         Numero: $('#numero').val(),
         Cidade: $('#cidade').val(),
+        Date: $('#data').val(),
         Complemento: $('#complemento').val(),
         Referencia: $('#referencia').val(),
         Uf: $('#uf').val(),
-        Data: $('#data').val(),
+        DataEvento: dataEvento,
         Hora: $('#txtHoraInicio').val(),
         Qtd: $('#qtd').val(),
         Valor: $('#valor').val(),
@@ -388,6 +391,12 @@ function validarCampos() {
     else if (form.profissional == "" || form.profissional == 0) {
         demo.showNotification('top', 'right', 'selecione o profissional!');
         $('#profissional').focus();
+        return null;
+    }
+    else if (form.hora == null || form.hora == "")
+    {
+        demo.showNotification('top', 'right', 'Informe o horário de início!');
+        $('#hora').focus();
         return null;
     }
     else
