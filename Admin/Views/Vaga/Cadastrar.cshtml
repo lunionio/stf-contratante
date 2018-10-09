@@ -4,6 +4,8 @@
 
 }
 
+
+
 <div class="row">
     <div class="col-md-12">
         <div id="miolo" class="card strpied-tabled-with-hover card-wizard">
@@ -93,12 +95,12 @@
                                 </div>
                             </fieldset>
 
-                            <fieldset class="">
+                            <fieldset>
                                 <div class="form-group">
                                     <div class="row">
                                         <label class="col-sm-2 control-label">DATA</label>
                                         <div class="col-md-2">
-                                            <input type="text" id="data" required name="Data" class="form-control">
+                                            <input type="date" id="data" required name="Data" class="form-control datepicker">
                                         </div>
                                         <label class="col-sm-3 control-label">HORA DE INÍCIO</label>
                                         <div class="col-md-2">
@@ -173,6 +175,7 @@
 
 @section Scripts
 {
+    <script src="~/Scripts/Plugins/moment.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Scripts/Pages/VagaCadastrar.js"></script>
 }
-
