@@ -61,7 +61,7 @@ function enviar() {
 
     var data = getFormData();
     var settings = {
-        "url": "Enviar",
+        "url": "FaleConosco/Enviar",
         "method": "POST",
         "data": data
     }

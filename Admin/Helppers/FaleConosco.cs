@@ -17,10 +17,12 @@ namespace Admin.Helppers
                 IdCliente = PixCoreValues.UsuarioLogado.idCliente,
                 Nome = faleConosco.AssuntoNome + DateTime.Now.ToString() + " - " + PixCoreValues.UsuarioLogado.Login,
                 Status = 1,
-                TipoID = int.Parse(faleConosco.Assunto),
+                //TipoID = int.Parse(faleConosco.Assunto),
+                TipoID = 2,
                 Email = faleConosco.Email,
                 Descricao = faleConosco.Mensagem,
-                Origem = "Admin Contratante"
+                Origem = "Admin Contratante",
+                TicketStatusID = 1 //Status Aberto
             };
 
         }

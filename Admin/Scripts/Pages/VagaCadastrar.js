@@ -290,9 +290,9 @@ function controlarPaineis() {
         $("#referencia").focus();
     });
 
-    getForm().referencia.on("change", function () {
-        $("#data").focus();
-    });
+    //getForm().referencia.on("change", function () {
+    //    $("#data").focus();
+    //});
     getForm().qtd.on("change", function () {
         $("#total").val(calcularValorContratacao());
     });
@@ -335,21 +335,21 @@ function getData() {
     return Date.parse(data);
 }
 
-function valiidarData() {
-    var data = getFormData().data;
-    var date = new Date();
-    var hoje = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay();
-    if (Date.parse(data) <= Date.parse(hoje)) {
-        demo.showNotification('top', 'right', 'Não é possível cadastrar oportunidades retroativas!');
-        $('#data').val(" ");
-        $('#data').focus();
-        return false;
-    }
-    else {
-        return true;
-    }
+//function valiidarData() {
+//    var data = getFormData().data;
+//    var date = new Date();
+//    var hoje = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDay();
+//    if (Date.parse(data) <= Date.parse(hoje)) {
+//        demo.showNotification('top', 'right', 'Não é possível cadastrar oportunidades retroativas!');
+//        $('#data').val(" ");
+//        $('#data').focus();
+//        return false;
+//    }
+//    else {
+//        return true;
+//    }
 
-}
+//}
 
 function validarCampos() {
     var form = getFormData();
@@ -371,9 +371,9 @@ function validarCampos() {
         return null;
     }
 
-    else if (valiidarData() == false) {
-        return false;
-    }
+    //else if (valiidarData() == false) {
+    //    return false;
+    //}
 
     else if (form.valor == "" || form.valor == null) {
         demo.showNotification('top', 'right', 'Informe o valor unitário da contratação!');

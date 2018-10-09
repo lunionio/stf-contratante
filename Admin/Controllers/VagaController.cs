@@ -1,5 +1,6 @@
 ﻿using Admin.Helppser;
 using Admin.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -51,80 +52,55 @@ namespace Admin.Controllers
         {
             return PartialView(model);
         }
-        
-        public ActionResult Teste()
-        {
-            var oportunidades = new List<VagaViewModel>
-            {
-                 new VagaViewModel()
-                {
-                    Nome = "Festa teste",
-                    Id = 1,
-                    Qtd = 3,
-                    Valor = 100,
-                    ProfissionalNome ="garçom"
-                },
-
-
-                new VagaViewModel()
-                {
-                    Nome = "Festa teste",
-                    Id = 2,
-                    Qtd = 3,
-                    Valor = 100,
-                    ProfissionalNome ="garçom"
-                },
-                    new VagaViewModel()
-                {
-                    Nome = "Festa teste",
-                    Id = 3,
-                    Qtd = 3,
-                    Valor = 100,
-                    ProfissionalNome ="garçom"
-                }
-
-            };
-
-            return View(oportunidades);
-        }
 
         public PartialViewResult _listarOportunidades()
         {
-            //colocar o get de oportundiades por empresa
-            //Passando o idempresa
+            var usuario = PixCoreValues.UsuarioLogado;
+            var jss = new JavaScriptSerializer();
+            var keyUrl = ConfigurationManager.AppSettings["UrlAPI"].ToString();
+            var url = keyUrl + "/Seguranca/WpOportunidades/BuscarOportunidadePorEmpresa/" + usuario.idCliente + "/" +
+                PixCoreValues.UsuarioLogado.IdUsuario;
 
-            var oportunidades = new List<VagaViewModel>
+            var envio = new
             {
-                 new VagaViewModel()
-                {
-                    Nome = "Festa teste",
-                    Id = 1,
-                    Qtd = 3,
-                    Valor = 100,
-                    ProfissionalNome ="garçom"
-                },
-
-
-                new VagaViewModel()
-                {
-                    Nome = "Festa teste",
-                    Id = 2,
-                    Qtd = 3,
-                    Valor = 100,
-                    ProfissionalNome ="garçom"
-                },
-                    new VagaViewModel()
-                {
-                    Nome = "Festa teste",
-                    Id = 3,
-                    Qtd = 3,
-                    Valor = 100,
-                    ProfissionalNome ="garçom"
-                }
-
+                usuario.idEmpresa,
             };
 
-            return PartialView(oportunidades);
+            var data = jss.Serialize(envio);
+
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                streamWriter.Write(data);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            var oportunidades = default(IEnumerable<OportunidadeViewModel>);
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+                if (string.IsNullOrEmpty(result)
+                    || "null".Equals(result.ToLower()))
+                {
+                    throw new Exception("Ouve um erro durante o processo.");
+                }
+
+                oportunidades = jss.Deserialize<IEnumerable<OportunidadeViewModel>>(result);
+            }
+
+            IList<VagaViewModel> vagas = new List<VagaViewModel>();
+
+            foreach (var o in oportunidades)
+            {
+                vagas.Add(new VagaViewModel() { Id = o.ID, Nome = o.Nome, ProfissionalNome = o.DescProfissional });
+            }
+
+            return PartialView(vagas);
         }
 
         public PartialViewResult _lsitarProfissionais()
@@ -137,9 +113,6 @@ namespace Admin.Controllers
             return PartialView();
         }
 
-    
-
-
         private static bool SaveVaga(VagaViewModel vaga)
         {
             try
@@ -147,9 +120,19 @@ namespace Admin.Controllers
                 var usuario = PixCoreValues.UsuarioLogado;
                 var jss = new JavaScriptSerializer();
                 var keyUrl = ConfigurationManager.AppSettings["UrlAPI"].ToString();
-                var url = keyUrl + "/Seguranca/WpOprtunidades/SalvarOportunidade/" + usuario.idCliente + "/" +
+                var url = keyUrl + "/Seguranca/WpOportunidades/SalvarOportunidade/" + usuario.idCliente + "/" +
                     PixCoreValues.UsuarioLogado.IdUsuario;
-                var data = jss.Serialize(Oportundiade.Convert(vaga));
+
+                vaga.status = 1;
+
+                var op = Oportundiade.Convert(vaga);
+
+                var envio = new
+                {
+                    oportunidade = op,
+                };
+
+                var data = jss.Serialize(envio);
 
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 httpWebRequest.ContentType = "application/json";
@@ -179,8 +162,6 @@ namespace Admin.Controllers
             {
                 throw new Exception("Não foi possível salvar o usuário.", e);
             }
-        }
-        
-        
+        }  
     }
 }

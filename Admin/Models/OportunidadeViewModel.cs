@@ -10,12 +10,13 @@ namespace Admin.Models
         public string DescProfissional { get; set; }
         public string DescServico { get; set; }
         public DateTime DataOportunidade { get; set; }
-        public TimeSpan HoraInicio { get; set; }
-        public TimeSpan HoraFim { get; set; }
+        public string HoraInicio { get; set; }
+        public string HoraFim { get; set; }
         public decimal Valor { get; set; }
         public int Quantidade { get; set; }
         public Endereco Endereco { get; set; }
-        public int Status { get; set; }
+        public int OportunidadeStatusID { get; set; }
+        public int IdEmpresa { get; set; }
     }
 
     public class Endereco : Base
