@@ -35,7 +35,6 @@ function getForm() {
     }
 }
 
-
 function getFormData() {
     return {
         assunto: $('#assunto option:selected').val(),
